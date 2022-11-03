@@ -1,0 +1,69 @@
+﻿@page "{handler?}"
+@using Book.RazorPage.Infrastructure
+@using Book.RazorPage.Infrastructure.Utils
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Book.RazorPage.Pages.Admin.Users.IndexModel
+@{
+    ViewData["title"] = "مدیریت کاربران";
+    ViewData["selected"] = "users";
+}
+<form class="card shadow-lg " method="get">
+    <div class="card-header text-left">
+        <a asp-page="Index" class="btn btn-danger btn-sm">حذف فیلتر</a>
+        <button type="submit" class="btn btn-primary btn-sm">فیلتر</button>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <label>شناسه کاربر</label>
+                <input type="number" asp-for="FilterParams.Id" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label>ایمیل</label>
+                <input type="text" asp-for="FilterParams.Email" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label>شماره تلفن</label>
+                <input type="text" asp-for="FilterParams.PhoneNumber" class="form-control" />
+            </div>
+        </div>
+    </div>
+</form>
+<open-modal modal-title=" افرودن کاربر"
+            url="@Url.Page("Index","renderAddPage")">افزودن کاربر</open-modal>
+<div class="card">
+    <div class="card-body table-responsive p-0">
+        <table class="table table-bordered table-hover text-center">
+            <thead>
+            <tr>
+                <th>عکس</th>
+                <th>شماره تلفن</th>
+                <th>ایمیل</th>
+                <th>نام و نام خانوادگی</th>
+                <th>جنسیت</th>
+                <th>تاریخ عضویت</th>
+                <th>عملیات</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.FilterResult.Data)
+            {
+                <tr>
+                    <td>
+                        <img src="@Directories.GetUserAvatar(item.AvatarName)" width="120px" />
+                    </td>
+                    <td>@item.PhoneNumber</td>
+                    <td>@item.Email</td>
+                    <td>@item.Name  @item.Family</td>
+                    <td>@item.Gender</td>
+                    <td>@item.CreationDate.ToPersianDateTime()</td>
+                    <td>
+                        <open-modal modal-title="ویرایش کاربر" 
+                                    url="@Url.Page("Index","renderEditPage" , new {id = item.Id})">ویرایش کاربر</open-modal>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
